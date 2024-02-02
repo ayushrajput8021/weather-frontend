@@ -1,0 +1,70 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Weather App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+    .input-container {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .result-container {
+      text-align: center;
+    }
+    li {
+      list-style: none;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Weather App</h1>
+  <div class="input-container">
+    <h4>Enter the cities separated by comma &quot; , &quot;</h4>
+    <input type="text" id="cityInput" placeholder="Enter city name" />
+    <button onclick="getWeather()">Get Weather</button>
+  </div>
+  <div class="result-container" id="result">
+    <ul id="weatherList"></ul>
+  </div>
+
+  <script>
+    function getWeather() {
+      event.preventDefault();
+      var city = document.getElementById('cityInput').value;
+      const citiesArray = city.split(',');
+      const bodyData = { cities: citiesArray };
+
+      var API_URL = 'https://weather-app-bhc1.onrender.com/getWeather';
+      fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(bodyData),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          var weatherList = document.getElementById('weatherList');
+          weatherList.innerHTML = ''; // Clear previous content
+
+          for (var i in data.weather) {
+            var listItem = document.createElement('li');
+            listItem.textContent = 'The weather in ' + i + ' is ' + data.weather[i];
+            weatherList.appendChild(listItem);
+          }
+        })
+        .catch((error) => {
+          console.error('Error fetching weather data:', error);
+        });
+    }
+  </script>
+</body>
+</html>
